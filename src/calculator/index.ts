@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { err, ok } from "neverthrow";
+import { ok } from "neverthrow";
 
 import evaluate from "./internal/evaluator";
 import tokenise from "./internal/tokeniser";
@@ -14,10 +14,10 @@ export function calculate(expression: string, ans: Decimal, ind: Decimal, angleU
 	// jump out of neverthrow-land for React anyhow soon
 
 	const tokens = tokenise(expression);
-	if (tokens.isErr()) return err(tokens);
+	if (tokens.isErr()) return tokens;
 
 	const result = evaluate(tokens.value, ans, ind, angleUnit);
-	if (result.isErr()) return err(tokens);
+	if (result.isErr()) return result;
 
 	return ok(result.value);
 }

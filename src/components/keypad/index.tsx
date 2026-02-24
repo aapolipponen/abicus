@@ -25,9 +25,8 @@ export default function Keypad() {
 		);
 
 	return (
-		<>
-			<div>
-				<div x={["inline-grid grid-cols-5 gap-2", "w-96"]}>
+		<div x="flex flex-col items-start">
+			<div x={["inline-grid grid-cols-5 gap-2", "w-96"]}>
 					{/* Row #1 */}
 					<RawKey tint="blue-dark" onClick={onClickMemIn} label={keyLabel.memIn} />
 					<BasicKey tint="blue-dark" input="M" label={keyLabel.memOut} />
@@ -42,14 +41,14 @@ export default function Keypad() {
 					<RawKey label={keyLabel.root} onClick={calculator.buffer.input.root} tint="blue-mid" />
 					<FunctionKey name="√" tint="blue-mid" />
 
-					{/* Row #3 */}
-					<FunctionKey name="arcsin" tint="blue-mid" />
-					<FunctionKey name="arccos" tint="blue-mid" />
-					<FunctionKey name="arctan" tint="blue-mid" />
-					<RawKey label={keyLabel.power} onClick={calculator.buffer.input.power} tint="blue-mid" />
-					<RawKey label={keyLabel.squared} onClick={calculator.buffer.input.square} tint="blue-mid" />
+				{/* Row #3 */}
+				<FunctionKey name="arcsin" tint="blue-mid" />
+				<FunctionKey name="arccos" tint="blue-mid" />
+				<FunctionKey name="arctan" tint="blue-mid" />
+				<RawKey label={keyLabel.power} onClick={calculator.buffer.input.power} tint="blue-mid" />
+				<RawKey label={keyLabel.squared} onClick={calculator.buffer.input.square} tint="blue-mid" />
 
-					{/* Row #4 */}
+				{/* Row #4 */}
 					<BasicKey input="1" />
 					<BasicKey input="2" />
 					<BasicKey input="3" />
@@ -76,15 +75,14 @@ export default function Keypad() {
 					<BasicKey input="π" />
 					<BasicKey input="e" />
 
-					{/* Row #8 */}
-					<RawKey tint="red" label="⌫" onClick={calculator.buffer.del} />
-					{clearButton}
-					<div x={["col-span-2", "text-sm text-neutral-400", "inline-flex items-center justify-center"]}>
-						Abicus {gitRef}
-					</div>
-					<RawKey tint="blue-dark" label="=" onClick={calculator.crunch} />
+				{/* Row #8 */}
+				<RawKey tint="red" label="⌫" onClick={calculator.buffer.del} />
+				{clearButton}
+				<div x={["col-span-2", "text-sm text-neutral-400", "inline-flex items-center justify-center"]}>
+					Abicus {gitRef}
 				</div>
+				<RawKey tint="blue-dark" label="=" onClick={calculator.crunch} className="font-bold" />
 			</div>
-		</>
+		</div>
 	);
 }

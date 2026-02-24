@@ -5,35 +5,45 @@ export default function RadDegToggle() {
 
 	return (
 		<div
+			role="radiogroup"
+			aria-label="Angle unit"
 			x={[
-				"absolute top-1 left-1",
-				"h-10",
-				"border border-blue-border",
-				"divide-x divide-abi-dgrey",
+				"absolute top-1 left-1 z-10",
+				"h-9 w-fit",
+				"border border-border",
+				"divide-x divide-border",
 				"rounded-md overflow-hidden",
 				"flex items-center",
 			]}
 		>
 			<button
+				role="radio"
 				onClick={radsOn}
-				disabled={angleUnit === "rad"}
+				aria-checked={angleUnit === "rad"}
+				aria-label="Radians"
 				x={[
-					"text-[16px] key",
+					"text-[15px] key font-medium",
 					"h-full px-3",
 					"transition-all",
-					angleUnit === "rad" ? "bg-blue-light border-blue-border text-black" : "bg-white border-blue-border",
+					angleUnit === "rad"
+						? "bg-blue-mid text-grey-800 cursor-default"
+						: "bg-white text-grey-700 cursor-pointer",
 				]}
 			>
 				Rad
 			</button>
 			<button
+				role="radio"
 				onClick={degsOn}
-				disabled={angleUnit === "deg"}
+				aria-checked={angleUnit === "deg"}
+				aria-label="Degrees"
 				x={[
-					"text-[16px] key",
+					"text-[15px] key font-medium",
 					"h-full px-3",
 					"transition-all",
-					angleUnit === "deg" ? "bg-blue-light border-blue-border text-black" : "bg-white",
+					angleUnit === "deg"
+						? "bg-blue-mid text-grey-800 cursor-default"
+						: "bg-white text-grey-700 cursor-pointer",
 				]}
 			>
 				Deg

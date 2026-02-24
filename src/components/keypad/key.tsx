@@ -9,13 +9,13 @@ export type RawKeyProps<O extends string = never> = Omit<
 	{
 		label: ReactNode;
 		onClick: () => void;
-		tint?: "none" | "red" | "blue-light" | "blue-mid" | "blue-dark";
+		tint?: "key-base" | "red" | "blue-light" | "blue-mid" | "blue-dark";
 		className?: any;
 	},
 	O
 >;
 
-export function RawKey({ onClick: propsOnClick, tint = "none", label, className }: RawKeyProps) {
+export function RawKey({ onClick: propsOnClick, tint = "key-base", label, className }: RawKeyProps) {
 	const { buffer } = useCalculator();
 
 	function onMouseDown(e: MouseEvent<HTMLButtonElement>) {
@@ -23,30 +23,24 @@ export function RawKey({ onClick: propsOnClick, tint = "none", label, className 
 		buffer.ref.current?.focus();
 	}
 
-	function onClick() {
-		propsOnClick();
-	}
-
 	return (
 		<button
 			x={[
 				"h-12 key",
-				"rounded-sm border border-blue text-2xl",
+				"rounded-sm border border-border text-2xl",
 				[
-					"transition-all duration-75",
-					"scale-100",
-					"active:scale-97",
+					"active:scale-[0.97]",
 					match(tint)
-						.with("none", () => "bg-white border-blue-border")
-						.with("blue-dark", () => "bg-blue-dark text-white border-none")
-						.with("blue-mid", () => "bg-blue-mid border-none")
-						.with("blue-light", () => "bg-blue-light border-blue-border")
-						.with("red", () => "bg-red text-white border-none")
+						.with("key-base", () => "bg-key-base text-grey-800")
+						.with("blue-dark", () => "bg-blue-dark text-white")
+						.with("blue-mid", () => "bg-blue-mid text-grey-800")
+						.with("blue-light", () => "bg-blue-operator text-grey-800")
+						.with("red", () => "bg-red text-white")
 						.exhaustive(),
 				],
 				className,
 			]}
-			onClick={onClick}
+			onClick={propsOnClick}
 			onMouseDown={onMouseDown}
 		>
 			{label}
@@ -58,14 +52,14 @@ export function RawKey({ onClick: propsOnClick, tint = "none", label, className 
 
 type BasicKeyProps = RawKeyProps<"onClick" | "label"> & { input: string; label?: ReactNode };
 
-export function BasicKey({ input, label = input, ...props }: BasicKeyProps) {
+export function BasicKey({ input, label = input, className, ...props }: BasicKeyProps) {
 	const { buffer } = useCalculator();
 
 	function onClick() {
 		buffer.input.key(input);
 	}
 
-	return <RawKey label={label} onClick={onClick} {...props} />;
+	return <RawKey label={label} onClick={onClick} className={className} {...props} />;
 }
 
 /*****************************************************************************/
@@ -86,12 +80,12 @@ export function FunctionKey({ name, ...props }: FunctionKeyProps) {
 
 type OperatorKeyProps = RawKeyProps<"onClick" | "label"> & { symbol: string };
 
-export function OperatorKey({ symbol, ...props }: OperatorKeyProps) {
+export function OperatorKey({ symbol, className, ...props }: OperatorKeyProps) {
 	const { buffer } = useCalculator();
 
 	function onClick() {
 		buffer.input.oper(symbol);
 	}
 
-	return <RawKey label={symbol} onClick={onClick} {...props} />;
+	return <RawKey label={symbol} onClick={onClick} className={className} {...props} />;
 }

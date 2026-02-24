@@ -28,10 +28,11 @@ type CalculatorContext = {
 	 * - Stores the result in the answer memory register.
 	 * - Marks the input buffer as "clean" to signal that *the current answer matches the value of the input buffer*.
 	 *
-	 * @param `saveToInd` Whether the result should be saved **also** to the independent memory register. Default `false`.
+	 * @param saveToInd Whether the result should be saved **also** to the independent memory register. Default `false`.
+	 * @param angleUnitOverride When switching deg/rad, pass the new unit so the calculation uses it immediately.
 	 * @returns The result of the expression in the input buffer or `undefined` if the input could not be evaluated.
 	 */
-	crunch(saveToInd?: boolean): Decimal | undefined;
+	crunch(saveToInd?: boolean, angleUnitOverride?: AngleUnit): Decimal | undefined;
 };
 
 const CalculatorContextObject = createContext<CalculatorContext | null>(null);
@@ -56,10 +57,11 @@ export default function CalculatorProvider({ children }: PropsWithChildren) {
 		memory.empty();
 	}
 
-	function crunch(saveToInd = false) {
+	function crunch(saveToInd = false, angleUnitOverride?: AngleUnit) {
+		const unit = angleUnitOverride ?? angleUnit;
 		buffer.clean();
 
-		const result = calculate(buffer.value, memory.ans, memory.ind, angleUnit);
+		const result = calculate(buffer.value, memory.ans, memory.ind, unit);
 		if (result.isErr()) {
 			buffer.setErr(true);
 			return;
@@ -83,12 +85,20 @@ export default function CalculatorProvider({ children }: PropsWithChildren) {
 
 				angleUnit,
 				radsOn() {
-					buffer.makeDirty();
 					setAngleUnit("rad");
+					if (!buffer.isDirty && !buffer.isErr) {
+						crunch(false, "rad");
+					} else {
+						buffer.makeDirty();
+					}
 				},
 				degsOn() {
-					buffer.makeDirty();
 					setAngleUnit("deg");
+					if (!buffer.isDirty && !buffer.isErr) {
+						crunch(false, "deg");
+					} else {
+						buffer.makeDirty();
+					}
 				},
 			}}
 		>

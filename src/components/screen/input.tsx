@@ -4,7 +4,7 @@ import { useCalculator } from "#/state";
 import { match } from "ts-pattern";
 import { EXPR_DEBUG } from "#/error-boundary/constants";
 
-export default function Input() {
+export default function Input({ inputId }: { inputId: string }) {
 	const { buffer, crunch, angleUnit, degsOn, radsOn } = useCalculator();
 
 	const shouldShowOutput = !buffer.isDirty && !buffer.isErr;
@@ -15,35 +15,46 @@ export default function Input() {
 	}
 
 	function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-		match(e.key)
+		if (e.altKey && e.key === "u") {
+			angleUnit === "deg" ? radsOn() : degsOn();
+			e.preventDefault();
+			return;
+		}
+		const handled = match(e.key)
 			.with("Enter", "=", "ArrowDown", () => {
 				crunch();
+				return true;
 			})
 			.with("(", () => {
 				buffer.input.openBrackets();
+				return true;
 			})
 			.with(")", () => {
 				buffer.input.closeBrackets();
+				return true;
 			})
 			.with("^", "+", symbol => {
 				buffer.input.oper(symbol);
+				return true;
 			})
 			.with("/", () => {
 				buffer.input.oper("÷");
+				return true;
 			})
 			.with("-", () => {
 				buffer.input.oper("−");
+				return true;
 			})
 			.with("*", () => {
 				buffer.input.oper("×");
+				return true;
 			})
 			.with("Escape", () => {
 				buffer.empty();
+				return true;
 			})
-			.with("Tab", () => {
-				angleUnit === "deg" ? radsOn() : degsOn();
-			})
-			.otherwise(() => true) || e.preventDefault();
+			.otherwise(() => false);
+		if (handled) e.preventDefault();
 	}
 
 	function onBlur(e: FocusEvent<HTMLInputElement>) {
@@ -67,6 +78,7 @@ export default function Input() {
 
 	return (
 		<input
+			id={inputId}
 			type="text"
 			autoFocus
 			ref={buffer.ref}

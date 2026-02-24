@@ -1,32 +1,47 @@
 @import "tailwindcss";
 
 @theme {
+	/* Brand palette — accessible variants (WCAG AA) */
 	--blue-800: #204d99;
 	--blue-400: #6694e3;
-	--blue-200: #a6c7ff;
+	--blue-200: #8fb3ff;
+	--blue-100: #d6e4ff;
 	--blue-050: #e6efff;
+	--grey-800: #262626;
 	--grey-700: #424242;
+	--grey-300: #d1d5db;
 	--grey-050: #f5f5f5;
+	--red-600: #b91c1c;
 	--red-800: #9e0000;
 
 	--color-blue-dark: var(--blue-800);
-	--color-blue-border: var(--blue-400);
 	--color-blue-mid: var(--blue-200);
+	--color-blue-border: var(--blue-400);
+	--color-blue-operator: var(--blue-100);
 	--color-blue-light: var(--blue-050);
 
 	--color-grey-text: var(--grey-700);
+	--color-grey-800: var(--grey-800);
 	--color-grey-light: var(--grey-050);
 
-	--color-red: var(--red-800);
+	--color-red: var(--red-600);
+
+	/* Key base — white for number keys */
+	--key-base: #ffffff;
+	--color-key-base: var(--key-base);
+
+	/* Unified border (numbers / key-base) */
+	--color-border: var(--grey-300);
+
+	/* Abi theme aliases */
+	--color-abi-dgrey: var(--grey-700);
+	--color-abi-blue-2: var(--blue-050);
 }
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
 */
 
 @layer base {
@@ -41,6 +56,14 @@
 
 html {
 	font-family: "IBMPlexSansCondensed";
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	/* Match app background so zoom doesn’t reveal white body/html */
+	background-color: var(--grey-050);
+}
+
+body {
+	background-color: var(--grey-050);
 }
 
 @font-face {
@@ -49,41 +72,70 @@ html {
 }
 
 .key {
-	&:hover {
-		background-color: hsl(from var(--bg) h calc(s - 10) calc(1.1 * l - 15));
-	}
-
-	&:active {
-		background-color: hsl(from var(--bg) h calc(s + 50) calc(1.1 * l - 15));
-	}
+	user-select: none;
+	transition: filter 75ms cubic-bezier(0.2, 0, 0.2, 1), transform 75ms cubic-bezier(0.2, 0, 0.2, 1);
 }
 
-.bg-blue-dark {
-	--bg: var(--blue-800);
+.key:hover {
+	filter: brightness(0.95);
 }
 
+.key:active {
+	filter: brightness(0.90);
+}
+
+.key:focus-visible {
+	outline: 2px solid var(--blue-800);
+	outline-offset: 2px;
+}
+
+/* Number keys — fully white */
+.bg-key-base {
+	background-color: var(--key-base);
+}
+
+/* Operator keys */
+.bg-blue-operator {
+	background-color: var(--blue-100);
+}
+
+.bg-blue-operator.key {
+	border-color: transparent;
+}
+
+/* Function keys */
 .bg-blue-mid {
-	--bg: var(--blue-200);
+	background-color: var(--blue-200);
 }
 
-.bg-blue-light {
-	--bg: var(--blue-050);
+.bg-blue-mid.key {
+	border-color: transparent;
 }
 
-.bg-white {
-	--bg: white;
-
-	&.key:active {
-		background-color: hsl(0 0 92);
-	}
+/* Primary keys (equals, memory) */
+.bg-blue-dark {
+	background-color: var(--blue-800);
 }
 
+.bg-blue-dark.key {
+	border-color: transparent;
+}
+
+/* Clear/delete */
 .bg-red {
-	--bg: var(--red-800);
+	background-color: var(--red-600);
+}
+
+.bg-red.key {
+	border-color: transparent;
 }
 
 .text-grey-700 {
 	color: var(--grey-700);
+}
+
+.text-grey-800 {
+	color: var(--grey-800);
 }
 
 .text-2xl {
@@ -92,6 +144,12 @@ html {
 
 button {
 	cursor: pointer;
+}
+
+button:focus-visible {
+	outline: 2px solid var(--blue-800);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px rgba(32, 77, 153, 0.25);
 }
 
 .bg-grey-050 {
